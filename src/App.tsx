@@ -1,28 +1,40 @@
 import React from "react";
 import logo from "./logo.svg";
 import styled, { keyframes } from "styled-components";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 function App() {
   return (
     <AppDiv>
-      <AppHeader>
-        <AppLogo src={logo} alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <AppLink
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </AppLink>
-      </AppHeader>
+      <Routes>
+        <Route path="" element={<AppHeader text="Page 1" link="/page1" />} />
+        <Route path="/page1" element={<AppHeader text="Go Back" link="/" />} />
+      </Routes>
     </AppDiv>
   );
 }
 
 export default App;
+
+const AppHeader = (props: { text: string; link: string }) => {
+  const navigate = useNavigate();
+
+  return (
+    <AppHeaderContainer>
+      <AppLogo src={logo} alt="logo" />
+      <p>
+        Edit <code>src/App.tsx</code> and save to reload.
+      </p>
+      <AppLink
+        onClick={() => {
+          navigate(props.link);
+        }}
+      >
+        {props.text}
+      </AppLink>
+    </AppHeaderContainer>
+  );
+};
 
 const AppDiv = styled.div`
   text-align: center;
@@ -44,7 +56,7 @@ const AppLogo = styled.img`
   animation: ${AppLogoRotate} infinite 20s linear;
 `;
 
-const AppHeader = styled.header`
+const AppHeaderContainer = styled.header`
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
