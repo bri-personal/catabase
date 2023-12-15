@@ -7,8 +7,8 @@ function App() {
   return (
     <AppDiv>
       <Routes>
-        <Route path="" element={<AppHeader text="Page 1" link="/page1" />} />
-        <Route path="/page1" element={<AppHeader text="Go Back" link="/" />} />
+        <Route path="" element={<AppHeader text="To Log In" link="/login" />} />
+        <Route path="/login" element={<AppHeader text="Log In" link="/" />} />
       </Routes>
     </AppDiv>
   );
@@ -67,6 +67,9 @@ const AppHeaderContainer = styled.header`
   color: white;
 `;
 
-const AppLink = styled.a`
+const AppLink = styled.button`
   color: #61dafb;
+  background: none;
+  border: 1px solid;
+  font-size: 3vmin;
 `;
