@@ -5,6 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { supabase } from "./db";
 import { Database } from "./types";
 import { PostgrestError } from "@supabase/supabase-js";
+import Login from "./Login";
 
 function App() {
   const [countries, setCountries] = useState(
@@ -26,18 +27,20 @@ function App() {
 
   return (
     <AppDiv>
-      <Routes>
-        <Route
-          path=""
-          element={<AppHeader text="To Log In!" link="/login" />}
-        />
-        <Route path="/login" element={<AppHeader text="Log In" link="/" />} />
-      </Routes>
-      <ul>
-        {countries.map((country) => (
-          <li key={country.name}>{country.name}</li>
-        ))}
-      </ul>
+      <AppHeaderContainer>
+        <Routes>
+          <Route
+            path=""
+            element={<AppHeader text="Already Logged In" link="/" />}
+          />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+        <ul>
+          {countries.map((country) => (
+            <li key={country.name}>{country.name}</li>
+          ))}
+        </ul>
+      </AppHeaderContainer>
     </AppDiv>
   );
 }
