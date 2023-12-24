@@ -1,15 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import styled, { keyframes } from "styled-components";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { supabase } from "./db";
+import { Database } from "./database.types";
+import { PostgrestError } from "@supabase/supabase-js";
 
 function App() {
+  const [countries, setCountries] = useState(
+    Array<Database["public"]["Tables"]["countries"]["Row"]>,
+  );
+
+  useEffect(() => {
+    getCountries().catch((error: PostgrestError) => alert(error));
+  }, []);
+
+  async function getCountries() {
+    const { data, error } = await supabase.from("countries").select();
+    if (error) {
+      throw error;
+    }
+
+    setCountries(data);
+  }
+
   return (
     <AppDiv>
       <Routes>
-        <Route path="" element={<AppHeader text="To Log In" link="/login" />} />
+        <Route
+          path=""
+          element={<AppHeader text="To Log In!" link="/login" />}
+        />
         <Route path="/login" element={<AppHeader text="Log In" link="/" />} />
       </Routes>
+      <ul>
+        {countries.map((country) => (
+          <li key={country.name}>{country.name}</li>
+        ))}
+      </ul>
     </AppDiv>
   );
 }
