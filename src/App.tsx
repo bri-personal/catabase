@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import styled, { keyframes } from "styled-components";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { supabase } from "./db";
-import { Database } from "./database.types";
+import { Database } from "./types";
 import { PostgrestError } from "@supabase/supabase-js";
 
 function App() {
