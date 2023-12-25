@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [hasRegistered, setHasRegistered] = useState(false);
 
   useEffect(() => {
     async function checkSession() {
@@ -45,12 +46,16 @@ const RegisterPage = () => {
     await register(loginInfo)
       .then((res) => {
         alert("Creating account");
-        navigate("/login");
+        setHasRegistered(true);
       })
       .catch((err) => alert(err));
   };
 
-  return (
+  return hasRegistered ? (
+    // has registered -> tell user to check email for confirmation link
+    <h1>Check your email to confirm your registration!</h1>
+  ) : (
+    // has not registered -> show registration form
     <form
       onSubmit={handleSubmit}
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
