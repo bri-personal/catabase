@@ -3,7 +3,7 @@ import { supabase } from "./db";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const Login = () => {
+const RegisterPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +19,8 @@ const Login = () => {
     checkSession().catch((err) => alert(err));
   }, [navigate]);
 
-  async function login(loginInfo: { email: string; password: string }) {
-    const { data, error } = await supabase.auth.signInWithPassword({
+  async function register(loginInfo: { email: string; password: string }) {
+    const { data, error } = await supabase.auth.signUp({
       email: loginInfo.email,
       password: loginInfo.password,
     });
@@ -42,10 +42,10 @@ const Login = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await login(loginInfo)
+    await register(loginInfo)
       .then((res) => {
-        alert("Logging in");
-        navigate("/");
+        alert("Creating account");
+        navigate("/login");
       })
       .catch((err) => alert(err));
   };
@@ -55,7 +55,7 @@ const Login = () => {
       onSubmit={handleSubmit}
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <h1>Log In to Catabase</h1>
+      <h1>Create an Account</h1>
       <label>
         Email
         <input
@@ -74,15 +74,15 @@ const Login = () => {
           onChange={handleChange}
         />
       </label>
-      <AppLink type="submit">Log In</AppLink>
-      <AppLink type="button" onClick={() => navigate("/register")}>
-        Register
+      <AppLink type="submit">Register</AppLink>
+      <AppLink type="button" onClick={() => navigate("/login")}>
+        Back to Log In
       </AppLink>
     </form>
   );
 };
 
-export default Login;
+export default RegisterPage;
 
 const AppLink = styled.button`
   color: #61dafb;
