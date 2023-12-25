@@ -1,9 +1,23 @@
 import styled from "styled-components";
 import { supabase } from "./db";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkSession() {
+      let { data, error } = await supabase.auth.getSession();
+      if (error) {
+        throw error;
+      }
+      if (data.session) {
+        navigate("/");
+      }
+    }
+    checkSession().catch((err) => alert(err));
+  }, [navigate]);
 
   async function login() {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -15,7 +29,7 @@ const Login = () => {
       throw error;
     }
 
-    return data.user;
+    return data;
   }
 
   return (
@@ -24,7 +38,7 @@ const Login = () => {
       <AppLink
         onClick={async () => {
           await login()
-            .then(() => {
+            .then((res) => {
               alert("Logging in");
               navigate("/");
             })

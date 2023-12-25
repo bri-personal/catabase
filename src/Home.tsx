@@ -7,13 +7,34 @@ import styled, { keyframes } from "styled-components";
 import logo from "./logo.svg";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const [countries, setCountries] = useState(
     Array<Database["public"]["Tables"]["countries"]["Row"]>,
   );
 
   useEffect(() => {
-    getCountries().catch((error: PostgrestError) => alert(error));
-  }, []);
+    async function checkSession() {
+      let { data, error } = await supabase.auth.getSession();
+      if (error) {
+        throw error;
+      }
+      if (!data.session) {
+        navigate("/login");
+      }
+    }
+    checkSession()
+      .then(() => getCountries().catch((error: PostgrestError) => alert(error)))
+      .catch((err) => alert(err));
+  }, [navigate]);
+
+  async function logout() {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      throw error;
+    }
+  }
 
   async function getCountries() {
     const { data, error } = await supabase.from("countries").select();
@@ -24,8 +45,6 @@ const Home = () => {
     setCountries(data);
   }
 
-  const navigate = useNavigate();
-
   return (
     <>
       <AppLogo src={logo} alt="logo" />
@@ -33,11 +52,16 @@ const Home = () => {
         Edit <code>src/App.tsx</code> and save to reload.
       </p>
       <AppLink
-        onClick={() => {
-          navigate("/");
+        onClick={async () => {
+          await logout()
+            .then(() => {
+              alert("logging out");
+              navigate("/login");
+            })
+            .catch((err) => alert(err));
         }}
       >
-        {"Press me!"}
+        {"Log Out"}
       </AppLink>
       <ul>
         {countries.map((country) => (
