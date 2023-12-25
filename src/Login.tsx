@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { supabase } from "./db";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AuthApiError } from "@supabase/gotrue-js";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,10 +20,10 @@ const Login = () => {
     checkSession().catch((err) => alert(err));
   }, [navigate]);
 
-  async function login() {
+  async function login(loginInfo: { email: string; password: string }) {
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: "example@email.com",
-      password: "example-password",
+      email: loginInfo.email,
+      password: loginInfo.password,
     });
 
     if (error) {
@@ -32,22 +33,56 @@ const Login = () => {
     return data;
   }
 
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const name = event.currentTarget.name;
+    const value = event.currentTarget.value;
+    setLoginInfo((values) => ({ ...values, [name]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await login(loginInfo)
+      .then((res) => {
+        alert("Logging in");
+        navigate("/");
+      })
+      .catch((err) => {
+        if (err instanceof AuthApiError) {
+          alert("Email or Password is incorrect!");
+        } else {
+          alert(err);
+        }
+      });
+  };
+
   return (
-    <>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column" }}
+    >
       <h1>Login</h1>
-      <AppLink
-        onClick={async () => {
-          await login()
-            .then((res) => {
-              alert("Logging in");
-              navigate("/");
-            })
-            .catch((err) => alert(err));
-        }}
-      >
-        Click to log in
-      </AppLink>
-    </>
+      <label>
+        Email
+        <input
+          type="text"
+          name="email"
+          value={loginInfo.email || ""}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Password
+        <input
+          type="password"
+          name="password"
+          value={loginInfo.password || ""}
+          onChange={handleChange}
+        />
+      </label>
+      <AppLink type="submit">Click to log in</AppLink>
+    </form>
   );
 };
 

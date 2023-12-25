@@ -55,7 +55,7 @@ const Home = () => {
         onClick={async () => {
           await logout()
             .then(() => {
-              alert("logging out");
+              alert("Logging out");
               navigate("/login");
             })
             .catch((err) => alert(err));
