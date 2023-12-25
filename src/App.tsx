@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Route, Routes } from "react-router-dom";
-import Login from "./Login";
-import Home from "./Home";
+import LoginPage from "./LoginPage";
+import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
     <AppDiv>
       <AppHeaderContainer>
         <Routes>
-          <Route path="" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </AppHeaderContainer>

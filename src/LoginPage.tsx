@@ -3,7 +3,7 @@ import { supabase } from "./db";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const Login = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
 
 const AppLink = styled.button`
   color: #61dafb;

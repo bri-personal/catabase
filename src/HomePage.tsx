@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import logo from "./logo.svg";
 
-const Home = () => {
+const HomePage = () => {
   const navigate = useNavigate();
 
   const [countries, setCountries] = useState(
@@ -72,7 +72,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;
 
 const AppLogoRotate = keyframes`
   from {
