@@ -2,9 +2,28 @@ import styled from "styled-components";
 import { supabase } from "./db";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { User, WeakPassword, Session } from "@supabase/gotrue-js";
+
+interface LoginRegisterProps {
+  titleText: string; // text shown at top of form
+  alertText: string; // text shown when submission is successful
+  redirectPath: string; // path to redirect if already logged in
+  submitButtonText: string; // text on submit button
+  submitButtonPath: string; // path to redirect when submission is successful
+  otherButtonText: string; // text on other button (go to register/login)
+  otherButtonPath: string; // path to redirect when other button clicked
+  handleSubmitFunc: (loginInfo: {
+    email: string;
+    password: string;
+  }) => Promise<{
+    user: User | null;
+    session: Session | null;
+    weakPassword?: WeakPassword | undefined;
+  }>; // function to call the auth API when submit button clicked (login/register)
+}
 
 // page shown for user to log in to their account
-const LoginPage = () => {
+const LoginRegisterPage = (props: LoginRegisterProps) => {
   const navigate = useNavigate();
 
   // state containing username and password
@@ -19,25 +38,11 @@ const LoginPage = () => {
         throw error;
       }
       if (data.session) {
-        navigate("/");
+        navigate(props.redirectPath);
       }
     }
     checkSession().catch((err) => alert(err));
-  }, [navigate]);
-
-  // async function to sign in and get session through supabase auth
-  async function login(loginInfo: { email: string; password: string }) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: loginInfo.email,
-      password: loginInfo.password,
-    });
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
+  }, [navigate, props.redirectPath]);
 
   // function to update loginInfo for change in any field in log in form
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -49,10 +54,11 @@ const LoginPage = () => {
   // function to handle submission by calling login with given info
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await login(loginInfo)
-      .then((res) => {
-        alert("Logging in");
-        navigate("/");
+    await props
+      .handleSubmitFunc(loginInfo)
+      .then(() => {
+        alert(props.alertText);
+        navigate(props.submitButtonPath);
       })
       .catch((err) => alert(err));
   };
@@ -63,7 +69,7 @@ const LoginPage = () => {
       onSubmit={handleSubmit}
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <h1>Log In to Catabase</h1>
+      <h1>{props.titleText}</h1>
       <label>
         Email
         {/*
@@ -86,15 +92,15 @@ const LoginPage = () => {
           onChange={handleChange}
         />
       </label>
-      <AppLink type="submit">Log In</AppLink>
-      <AppLink type="button" onClick={() => navigate("/register")}>
-        Register
+      <AppLink type="submit">{props.submitButtonText}</AppLink>
+      <AppLink type="button" onClick={() => navigate(props.otherButtonPath)}>
+        {props.otherButtonText}
       </AppLink>
     </form>
   );
 };
 
-export default LoginPage;
+export default LoginRegisterPage;
 
 // login and register button styling
 const AppLink = styled.button`
