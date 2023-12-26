@@ -1,90 +1,85 @@
-import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import styled, { keyframes } from "styled-components";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./HomePage";
+import LoginRegisterPage from "./LoginRegisterPage";
 import { supabase } from "./db";
-import { Database } from "./types";
-import { PostgrestError } from "@supabase/supabase-js";
+import RegisterVerifyPage from "./RegisterVerifyPage";
 
+// parent component containing all pages
 function App() {
-  const [countries, setCountries] = useState(
-    Array<Database["public"]["Tables"]["countries"]["Row"]>,
-  );
-
-  useEffect(() => {
-    getCountries().catch((error: PostgrestError) => alert(error));
-  }, []);
-
-  async function getCountries() {
-    const { data, error } = await supabase.from("countries").select();
-    if (error) {
-      throw error;
-    }
-
-    setCountries(data);
-  }
-
   return (
     <AppDiv>
       <Routes>
+        <Route path="" element={<HomePage />} />
         <Route
-          path=""
-          element={<AppHeader text="To Log In!" link="/login" />}
+          path="/login"
+          element={
+            <LoginRegisterPage
+              titleText="Log In to Catabase"
+              alertText="Logging in"
+              redirectPath="/"
+              submitButtonText="Log In"
+              submitButtonPath="/"
+              otherButtonText="Register"
+              otherButtonPath="/register"
+              handleSubmitFunc={async (loginInfo: {
+                email: string;
+                password: string;
+              }) => {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                  email: loginInfo.email,
+                  password: loginInfo.password,
+                });
+
+                if (error) {
+                  throw error;
+                }
+
+                return data;
+              }}
+            />
+          }
         />
-        <Route path="/login" element={<AppHeader text="Log In" link="/" />} />
+        <Route
+          path="/register"
+          element={
+            <LoginRegisterPage
+              titleText="Create an Account"
+              alertText="Creating account"
+              redirectPath="/"
+              submitButtonText="Register"
+              submitButtonPath="/register/verify"
+              otherButtonText="Back to Login"
+              otherButtonPath="/login"
+              handleSubmitFunc={async (loginInfo: {
+                email: string;
+                password: string;
+              }) => {
+                const { data, error } = await supabase.auth.signUp({
+                  email: loginInfo.email,
+                  password: loginInfo.password,
+                });
+
+                if (error) {
+                  throw error;
+                }
+
+                return data;
+              }}
+            />
+          }
+        />
+        <Route path="/register/verify" element={<RegisterVerifyPage />} />
       </Routes>
-      <ul>
-        {countries.map((country) => (
-          <li key={country.name}>{country.name}</li>
-        ))}
-      </ul>
     </AppDiv>
   );
 }
 
 export default App;
 
-const AppHeader = (props: { text: string; link: string }) => {
-  const navigate = useNavigate();
-
-  return (
-    <AppHeaderContainer>
-      <AppLogo src={logo} alt="logo" />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <AppLink
-        onClick={() => {
-          navigate(props.link);
-        }}
-      >
-        {props.text}
-      </AppLink>
-    </AppHeaderContainer>
-  );
-};
-
+// theme and text styling for all pages
 const AppDiv = styled.div`
   text-align: center;
-`;
-
-const AppLogoRotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const AppLogo = styled.img`
-  height: 40vmin;
-  pointer-events: none;
-  prefers-reduced-motion: no-preference;
-  animation: ${AppLogoRotate} infinite 20s linear;
-`;
-
-const AppHeaderContainer = styled.header`
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -93,11 +88,4 @@ const AppHeaderContainer = styled.header`
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-`;
-
-const AppLink = styled.button`
-  color: #61dafb;
-  background: none;
-  border: 1px solid;
-  font-size: 3vmin;
 `;
