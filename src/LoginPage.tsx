@@ -66,6 +66,8 @@ const LoginPage = () => {
       <h1>Log In to Catabase</h1>
       <label>
         Email
+        {/*
+         */}
         <input
           type="text"
           name="email"
@@ -75,6 +77,8 @@ const LoginPage = () => {
       </label>
       <label>
         Password
+        {/*
+         */}
         <input
           type="password"
           name="password"

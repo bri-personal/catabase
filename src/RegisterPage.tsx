@@ -73,6 +73,8 @@ const RegisterPage = () => {
       <h1>Create an Account</h1>
       <label>
         Email
+        {/*
+         */}
         <input
           type="text"
           name="email"
@@ -82,6 +84,8 @@ const RegisterPage = () => {
       </label>
       <label>
         Password
+        {/*
+         */}
         <input
           type="password"
           name="password"
