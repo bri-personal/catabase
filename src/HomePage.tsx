@@ -9,10 +9,14 @@ import logo from "./logo.svg";
 const HomePage = () => {
   const navigate = useNavigate();
 
+  // state for countries list from database (CHANGE LATER)
   const [countries, setCountries] = useState(
     Array<Database["public"]["Tables"]["countries"]["Row"]>,
   );
 
+  // when page opens, ensure session is valid
+  // if it is valid, fetch countries from database (CHANGE LATER)
+  // if it is not valid, redirect to login page
   useEffect(() => {
     async function checkSession() {
       let { data, error } = await supabase.auth.getSession();
@@ -28,6 +32,7 @@ const HomePage = () => {
       .catch((err) => alert(err));
   }, [navigate]);
 
+  // async function to log out of account
   async function logout() {
     const { error } = await supabase.auth.signOut();
 
@@ -36,6 +41,7 @@ const HomePage = () => {
     }
   }
 
+  // fetch countries from database (CHANGE LATER)
   async function getCountries() {
     const { data, error } = await supabase.from("countries").select();
     if (error) {
@@ -45,6 +51,7 @@ const HomePage = () => {
     setCountries(data);
   }
 
+  // home page component
   return (
     <>
       <AppLogo src={logo} alt="logo" />
