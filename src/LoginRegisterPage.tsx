@@ -18,7 +18,7 @@ interface LoginRegisterProps {
   }) => Promise<{
     user: User | null;
     session: Session | null;
-    weakPassword?: WeakPassword | undefined;
+    weakPassword?: WeakPassword;
   }>; // function to call the auth API when submit button clicked (login/register)
 }
 
