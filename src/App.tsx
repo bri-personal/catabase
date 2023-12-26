@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./HomePage";
 import LoginRegisterPage from "./LoginRegisterPage";
 import { supabase } from "./db";
+import RegisterVerifyPage from "./RegisterVerifyPage";
 
 // parent component containing all pages
 function App() {
@@ -68,10 +69,7 @@ function App() {
             />
           }
         />
-        <Route
-          path="/register/verify"
-          element={<h1>Check your email to verify your registration!</h1>}
-        />
+        <Route path="/register/verify" element={<RegisterVerifyPage />} />
       </Routes>
     </AppDiv>
   );
